@@ -33,5 +33,42 @@ class WeatherForecast:
             return "Nie będzie padać"
         return "Nie wiem!"
 
+class Result:
+
+    def __init__(self):
+        self.results = []
+
+    def open_file(self):
+        pass
+
+    def save_file(self):
+        pass
+
+
+results = []
+
+try:
+    file = open('result.txt', 'r')
+    for line in file.readlines():
+        splitted_line = line.split(';')
+        results.append([splitted_line[0], splitted_line[1].replace('\n', '')])
+    file.close()
+except FileNotFoundError:
+    pass
+
+for date in results:
+    if date[0] == sys.argv[2]:
+        # no request
+        print(date[1])
+        sys.exit()
+
 weather = WeatherForecast(api_key=sys.argv[1], date=sys.argv[2])
-print(weather.get_rain_info())
+rain_info = weather.get_rain_info()
+results.append([sys.argv[2], rain_info])
+print(rain_info)
+
+with open('result.txt', 'w') as file2:
+    rows = ''
+    for row in results:
+        rows = rows + row[0] + ';' + row[1] + '\n'
+    file2.write(rows)
